@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://ditioubtv33cs"]
+
+[node name="TestSceneUi" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LineEdit" type="LineEdit" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 157.0
+offset_top = 17.0
+offset_right = 225.5625
+offset_bottom = 48.0
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.012
+anchor_bottom = 0.022000002
+offset_left = 65.0
+offset_top = 31.0
+offset_right = 121.32
+offset_bottom = 53.079998
+text = "开始游戏"

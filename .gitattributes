@@ -1,0 +1,4 @@
+# Normalize EOL for all files that Git considers text files.
+* text=auto eol=lf
+# 强制文件名大小写敏感
+* case-sensitive
