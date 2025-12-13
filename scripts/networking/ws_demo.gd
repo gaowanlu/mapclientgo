@@ -1,10 +1,28 @@
 class_name WSDemo extends Node
 
 @export var websocket_url = "ws://www.mfavant.xyz:20025"
+@export var userId = ""
+@export var password = ""
+
+const ProtoCmd = preload("res://scripts/proto_res/proto_cmd.gd")
+const ProtoMessageHead = preload("res://scripts/proto_res/proto_message_head.gd")
+const ProtoExample = preload("res://scripts/proto_res/proto_example.gd")
+
+var protoPackage : ProtoMessageHead.ProtoPackage;
+var protoCSReqLogin : ProtoExample.ProtoCSReqLogin;
+var protoCSResLogin : ProtoExample.ProtoCSResLogin;
+
+var already_try_login:bool = false
 
 var socket = WebSocketPeer.new()
 
 func _ready() -> void:
+	protoPackage = ProtoMessageHead.ProtoPackage.new();
+	protoCSReqLogin = ProtoExample.ProtoCSReqLogin.new();
+	protoCSReqLogin.set_userId(userId);
+	protoCSReqLogin.set_password(password);
+	protoCSResLogin = ProtoExample.ProtoCSResLogin.new();
+
 	var err = socket.connect_to_url(websocket_url)
 	if err == OK:
 		print("Connecting to %s..." % websocket_url)
@@ -30,13 +48,23 @@ func _process(delta: float) -> void:
 	# `WebSocketPeer.STATE_OPEN` means the socket is connected and ready
 	# to send and receive data.
 	if state == WebSocketPeer.STATE_OPEN:
+		if !already_try_login:
+			print("进行登录请求")
+			already_try_login = true;
+			protoPackage.set_cmd(ProtoCmd.ProtoCmd.PROTO_CMD_CS_REQ_LOGIN);
+			protoPackage.set_protocol(protoCSReqLogin.to_bytes());
+			socket.send(protoPackage.to_bytes());
+
 		while socket.get_available_packet_count():
 			var packet = socket.get_packet()
-			if socket.was_string_packet():
-				var packet_text = packet.get_string_from_utf8()
-				print("< Got text data from server: %s" % packet_text)
-			else:
-				print("< Got binary data from server: %d bytes" % packet.size())
+			var err = protoPackage.from_bytes(packet)
+			if ProtoCmd.PB_ERR.NO_ERRORS == err:
+				print("解包成功")
+				print("cmd=",protoPackage.get_cmd())
+				if protoPackage.get_cmd() == ProtoCmd.ProtoCmd.PROTO_CMD_CS_RES_LOGIN:
+					print("PROTO_CMD_CS_RES_LOGIN")
+					protoCSResLogin.from_bytes(protoPackage.get_protocol())
+					print("sessionId=", protoCSResLogin.get_sessionId())
 
 	# `WebSocketPeer.STATE_CLOSING` means the socket is closing.
 	# It is important to keep polling for a clean close.

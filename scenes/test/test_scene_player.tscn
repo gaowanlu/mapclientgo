@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=4 uid="uid://ch5yr3ndt60i2"]
+[gd_scene load_steps=4 format=4 uid="uid://ch5yr3ndt60i2"]
 
 [ext_resource type="TileSet" uid="uid://e7i4kiw8k8c8" path="res://tilesets/game_tile_set.tres" id="1_mhild"]
 [ext_resource type="PackedScene" uid="uid://cx5w302vnq7tm" path="res://scenes/characters/player/player.tscn" id="2_q17pk"]
+[ext_resource type="Script" uid="uid://dhpgdvs7epayv" path="res://scripts/networking/ws_demo.gd" id="3_vcgnq"]
 
 [node name="TestSceneTilemap" type="Node2D"]
 
@@ -18,3 +19,9 @@ tile_set = ExtResource("1_mhild")
 [node name="Player" parent="GameTileMap" instance=ExtResource("2_q17pk")]
 position = Vector2(116, 129)
 current_tool = 3
+
+[node name="WSDemo" type="Node" parent="."]
+script = ExtResource("3_vcgnq")
+userId = "1"
+password = "1"
+metadata/_custom_type_script = "uid://dhpgdvs7epayv"
