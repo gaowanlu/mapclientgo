@@ -16,6 +16,9 @@ var already_try_login:bool = false
 
 var socket = WebSocketPeer.new()
 
+@warning_ignore("unused_signal")
+signal signal_login_succ
+
 func _ready() -> void:
 	protoPackage = ProtoMessageHead.ProtoPackage.new();
 	protoCSReqLogin = ProtoExample.ProtoCSReqLogin.new();
@@ -65,6 +68,7 @@ func _process(delta: float) -> void:
 					print("PROTO_CMD_CS_RES_LOGIN")
 					protoCSResLogin.from_bytes(protoPackage.get_protocol())
 					print("sessionId=", protoCSResLogin.get_sessionId())
+					signal_login_succ.emit(protoCSResLogin.get_sessionId())
 
 	# `WebSocketPeer.STATE_CLOSING` means the socket is closing.
 	# It is important to keep polling for a clean close.
