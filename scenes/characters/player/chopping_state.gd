@@ -2,6 +2,13 @@ extends NodeState
 
 @export var player: Player
 @export var animated_sprite_2d: AnimatedSprite2D
+# 工具使用碰撞
+@export var hit_component_collision_shape: CollisionShape2D
+
+func _on_ready() -> void:
+	# player的工具默认不碰撞
+	hit_component_collision_shape.disabled = true;
+	hit_component_collision_shape.position = Vector2(0, 0);
 
 func _on_process(_delta : float) -> void:
 	pass
@@ -16,14 +23,24 @@ func _on_next_transitions() -> void:
 func _on_enter() -> void:
 	if player.player_direction == Vector2.UP:
 		animated_sprite_2d.play("chopping_back")
+		hit_component_collision_shape.position = Vector2(3, -20);
 	elif player.player_direction == Vector2.DOWN:
 		animated_sprite_2d.play("chopping_front")
+		hit_component_collision_shape.position = Vector2(-3, 0);
 	elif player.player_direction == Vector2.LEFT:
 		animated_sprite_2d.play("chopping_left")
+		hit_component_collision_shape.position = Vector2(-9, 0);
 	elif player.player_direction == Vector2.RIGHT:
 		animated_sprite_2d.play("chopping_right")
+		hit_component_collision_shape.position = Vector2(9, 0);
 	else:
 		animated_sprite_2d.play("chopping_front")
+		
+	# 工具碰撞生效
+	hit_component_collision_shape.disabled = false;
+	
 
 func _on_exit() -> void:
 	animated_sprite_2d.stop()
+	# 工具碰撞失效
+	hit_component_collision_shape.disabled = true;
