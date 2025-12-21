@@ -16,6 +16,9 @@ func on_hurt(hit_damage: int) -> void:
 	print("大树受到伤害", hit_damage)
 	# 将收到的伤害传给damage_component
 	damage_component.apply_damage(hit_damage);
+	material.set_shader_parameter("shake_intensity", 0.5);
+	await get_tree().create_timer(1.0).timeout
+	material.set_shader_parameter("shake_intensity", 0.0);
 
 func max_damaged_reached() -> void:
 	call_deferred("add_tree_log_scene");
